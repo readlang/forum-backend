@@ -14,8 +14,8 @@ const xss = require('xss-clean')
 
 // imports the various routes of the server
 // const artist = require('./routes/artist')
-// const user = require('./routes/user')
-// const song = require('./routes/song')
+const user = require('./routes/user')
+const site = require('./routes/site')
 const test = require('./routes/test')
 
 const app = express();
@@ -46,8 +46,8 @@ app.use(limiter)
 
 // these are defining the routes
 //app.use('/artist', artist)
-//app.use('/user', user)
-//app.use('/song', song)
+app.use('/user', user)
+app.use('/site', site)
 app.use('/test', test)
 
 const PORT = process.env.PORT || 5001
