@@ -1,5 +1,5 @@
 const { sql, sequelize } = require('../config/db')
-const { User, Site, Post, Comment } = require('../models/associationsIndex')
+const { User, Site, Post, Comment, Vote } = require('../models/associationsIndex')
 
 const getTest = async (req, res, next) => {
     try {
@@ -34,6 +34,8 @@ const syncDBtables = async (req, res, next) => {
         await Site.sync({force: true})
         await Post.sync({force: true})
         await Comment.sync({force: true})
+        await Vote.sync({force: true})
+        
         console.log("All tables should be created")
         res
         .status(200)
