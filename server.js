@@ -16,6 +16,9 @@ const xss = require('xss-clean')
 // const artist = require('./routes/artist')
 const user = require('./routes/user')
 const site = require('./routes/site')
+const post = require('./routes/post')
+const comment = require('./routes/comment')
+const vote = require('./routes/vote')
 const test = require('./routes/test')
 
 const app = express();
@@ -48,6 +51,9 @@ app.use(limiter)
 //app.use('/artist', artist)
 app.use('/user', user)
 app.use('/site', site)
+app.use('/post', post)
+app.use('/comment', comment)
+app.use('/vote', vote)
 app.use('/test', test)
 
 const PORT = process.env.PORT || 5001

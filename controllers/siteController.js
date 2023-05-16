@@ -1,18 +1,66 @@
 const {Site} = require('../models/associationsIndex')
 
-const postSite = async (req, res, next) => {
+const getSites = async (req, res, next) => {
     try {
-        const example = {name: "NYT", description: "a news site", url: "http://example.com", UserId: 1}
-        const site = await Site.create(example)
+        const sites = await Site.findAll()
         res
         .status(200)
         .setHeader('Content-Type', 'application/json')
-        .json({msg: site})
+        .json(sites)
+    } catch (error) {
+        next(error)
+    }
+}
+
+const postSite = async (req, res, next) => {
+    try {
+        const site = await Site.create(req.body)
+        res
+        .status(200)
+        .setHeader('Content-Type', 'application/json')
+        .json(site)
+    } catch (error) {
+        next(error)
+    }
+}
+
+const updateSite = async (req, res, next) => {
+    try {
+        const site = await Site.findByPk(req.params.siteId)
+
+        if (req.body.name) site.name = req.body.name
+        if (req.body.description) site.description = req.body.description
+        if (req.body.url) site.url = req.body.url
+
+        const result = await site.save()
+        res
+        .status(200)
+        .setHeader('Content-Type', 'application/json')
+        .json(result)
+    } catch (error) {
+        next(error)
+    }
+}
+
+const deleteSite = async (req, res, next) => {
+    try {
+        const result = await Site.destroy({
+            where: { id: req.params.siteId }
+        })
+        res
+        .status(200)
+        .setHeader('Content-Type', 'application/json')
+        .json({
+            deletedItems: result
+        })
     } catch (error) {
         next(error)
     }
 }
 
 module.exports = {
-    postSite
+    getSites,
+    postSite,
+    updateSite,
+    deleteSite,
 }

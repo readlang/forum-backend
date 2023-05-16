@@ -3,16 +3,17 @@ const router = express.Router();
 const {
     getSites,
     postSite,
-    syncSites
+    updateSite,
+    deleteSite,
 } = require('../controllers/siteController')
 
 // all on /site/ route
-// router.route('/')
-//     .get(getSites)
+router.route('/')
+    .get(getSites)
+    .post(postSite)
 
-router.route('/post')    
-    .get(postSite)
-
-
+router.route('/:siteId')
+    .put(updateSite)
+    .delete(deleteSite)
 
 module.exports = router
