@@ -4,8 +4,7 @@ const { User, Site, Post, Comment, Vote } = require('../models/associationsIndex
 const getTest = async (req, res, next) => {
     try {
         const example = await sql`
-            SELECT * FROM playing_with_neon
-
+            SELECT * FROM xx
         `
         console.log("test controller hit!")
         res
