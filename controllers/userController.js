@@ -1,4 +1,4 @@
-const { User, Site } = require('../models/associationsIndex')
+const { User } = require('../models/associationsIndex')
 
 const getUsers = async (req, res, next) => {
     try {
@@ -25,24 +25,9 @@ const postUser = async (req, res, next) => {
     }
 }
 
-const syncUsers = async (req, res, next) => {
-    try {
-        await User.sync({force: true}) 
-        await Site.sync({force: true})
-        console.log("User model should be created")
-        res
-        .status(200)
-        .setHeader('Content-Type', 'application/json')
-        .json({msg: "User model should be created"})
-    } catch (error) {
-        next(error)
-    }
-}
-
 module.exports = {
     getUsers,
     postUser,
-    syncUsers
 }
 
 

@@ -5,7 +5,8 @@ const UserModel = sequelize.define('User', {
     // Model attributes are defined here
     userName: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     email: {
       type: DataTypes.TEXT,
