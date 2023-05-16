@@ -1,4 +1,4 @@
-const {Post} = require('../models/associationsIndex')
+const {Post, Comment, User} = require('../models/associationsIndex')
 
 const getPosts = async (req, res, next) => {
     try {
@@ -58,9 +58,26 @@ const deletePost = async (req, res, next) => {
     }
 }
 
+// get all Comments for a Post (postId)
+const getPostComments = async (req, res, next) => {
+    try {
+        const comments = await Comment.findAll({
+            where: { PostId: req.params.postId },
+            include: [{ model: User, attributes: ['userName'] }]
+        })
+        res
+        .status(200)
+        .setHeader('Content-Type', 'application/json')
+        .json(comments)
+    } catch (error) {
+        next(error)
+    }
+}
+
 module.exports = {
     getPosts,
     postPost,
     updatePost,
     deletePost,
+    getPostComments
 }

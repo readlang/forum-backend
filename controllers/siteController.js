@@ -1,4 +1,4 @@
-const {Site} = require('../models/associationsIndex')
+const {Site, Post, User} = require('../models/associationsIndex')
 
 const getSites = async (req, res, next) => {
     try {
@@ -58,9 +58,26 @@ const deleteSite = async (req, res, next) => {
     }
 }
 
+// get all Posts for a Site (siteId)
+const getSitePosts = async (req, res, next) => {
+    try {
+        const posts = await Post.findAll({
+            where: { SiteId: req.params.siteId },
+            include: [{model: User, attributes: ['userName'] }] 
+        })
+        res
+        .status(200)
+        .setHeader('Content-Type', 'application/json')
+        .json(posts)
+    } catch (error) {
+        next(error)
+    }
+}
+
 module.exports = {
     getSites,
     postSite,
     updateSite,
     deleteSite,
+    getSitePosts
 }

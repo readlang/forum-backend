@@ -5,6 +5,7 @@ const {
     postSite,
     updateSite,
     deleteSite,
+    getSitePosts
 } = require('../controllers/siteController')
 
 // all on /site/ route
@@ -15,5 +16,9 @@ router.route('/')
 router.route('/:siteId')
     .put(updateSite)
     .delete(deleteSite)
+
+// get all Posts for a Site (siteId)
+router.route('/:siteId/posts')
+    .get(getSitePosts)
 
 module.exports = router
