@@ -6,7 +6,7 @@ const getUsers = async (req, res, next) => {
         res
         .status(200)
         .setHeader('Content-Type', 'application/json')
-        .json({msg: users})
+        .json(users)
     } catch (error) {
         next(error)
     }
@@ -14,8 +14,7 @@ const getUsers = async (req, res, next) => {
 
 const postUser = async (req, res, next) => {
     try {
-        const example = {userName: "Jane", email: "james@example.com", password: "1234"}
-        const user = await User.create(example)
+        const user = await User.create(req.body)
         res
         .status(200)
         .setHeader('Content-Type', 'application/json')
@@ -25,24 +24,51 @@ const postUser = async (req, res, next) => {
     }
 }
 
+const updateUser = async (req, res, next) => {
+    try {
+        const user = await User.findByPk(req.params.userId)
+
+        if (req.body.userName) user.userName = req.body.userName
+        if (req.body.email) user.email = req.body.email
+        if (req.body.password) user.password = req.body.password
+        if (req.body.admin) user.admin = req.body.admin
+
+        const result = await user.save()
+        res
+        .status(200)
+        .setHeader('Content-Type', 'application/json')
+        .json(result)
+    } catch (error) {
+        next(error)
+    }
+}
+
+const deleteUser = async (req, res, next) => {
+    try {
+        const result = await User.destroy({
+            where: { id: req.params.userId }
+        })
+        res
+        .status(200)
+        .setHeader('Content-Type', 'application/json')
+        .json({
+            deletedItems: result
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
 module.exports = {
     getUsers,
     postUser,
+    updateUser,
+    deleteUser,
 }
 
 
 /*
 CRUD
-READ:
-const users = await User.findAll()
-
-CREATE AND UPDATE:
-const jane = User.build({ name: "Jane" }); - only creates object, does not save to DB
-await jane.save(); - saves to DB
-const jane = await User.create({ name: "Jane" }); // build and save in one method
-
-DELETE:
-await jain.destroy(); // deletes from DB
 
 // increment / decrement
 const jane = await User.create({ name: "Jane", age: 100 });
