@@ -29,11 +29,12 @@ const getTest = async (req, res, next) => {
 // endpoint:  /test/sync
 const syncDBtables = async (req, res, next) => {
     try {
-        await User.sync({force: true}) 
-        await Site.sync({force: true})
-        await Post.sync({force: true})
-        await Comment.sync({force: true})
-        await Vote.sync({force: true})
+        // this (alter: true) should be avoided in production
+        await User.sync({alter: true}) 
+        await Site.sync({alter: true})
+        await Post.sync({alter: true})
+        await Comment.sync({alter: true})
+        await Vote.sync({alter: true})
         
         console.log("All tables should be created")
         res
