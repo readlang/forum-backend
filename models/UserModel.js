@@ -1,5 +1,8 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db')
+
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
 
 const UserModel = sequelize.define('User', {
     // Model attributes are defined here
@@ -24,9 +27,16 @@ const UserModel = sequelize.define('User', {
 }, {
     // Other model options go here
 });
-  
-// `sequelize.define` also returns the model
-console.log(UserModel === sequelize.models.User); // true
+
+// custom instance methods are added with Model.prototype syntax
+UserModel.prototype.getSignedJwtToken = function() {
+    return jwt.sign({id:this.id}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRE} )
+}
+
+UserModel.prototype.matchPassword = async function(enteredPassword) {
+    //return await bcrypt.compare(enteredPassword, this.password) ///////////////// use this once passwords are hashed
+    return (enteredPassword === this.password)
+}
 
 module.exports = {
     UserModel

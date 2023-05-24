@@ -1,9 +1,9 @@
 // this will check if there is auth in the header and make sure its a JWT
 // this will decode the JWT and use the decoded id to look up the user
-// this user will be appended to the request and passed on to other requests
-// placed as middleware at getUser (get one user) endpoint
+// this user will be appended to the request and passed on to other requests (req.user)
+// placed as middleware at protected endpoints
 
-const User = require('../models/User');
+const { User } = require('../models/associationsIndex');
 const jwt = require('jsonwebtoken')
 
 const protectedRoute = async (req, res, next) => {
@@ -23,7 +23,7 @@ const protectedRoute = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
         console.log("Decoded JWT: ", decoded)
 
-        req.user = await User.findById(decoded.id)
+        req.user = await User.findByPk(decoded.id)
         console.log("User: ", req.user)
         
         next()

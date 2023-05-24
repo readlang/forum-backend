@@ -2,7 +2,8 @@
 
 const errorHandler = (err, req, res, next) => {
     console.log("-- Source: errorHandler --");
-    console.log(err.stack.split("\n", 2).join(" -"));
+    //console.log(err.stack.split("\n", 2).join(" -"));
+    console.log(err)
 
     res
     .status(err.statusCode || 500)
