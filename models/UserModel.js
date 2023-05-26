@@ -34,8 +34,7 @@ UserModel.prototype.getSignedJwtToken = function() {
 }
 
 UserModel.prototype.matchPassword = async function(enteredPassword) {
-    //return await bcrypt.compare(enteredPassword, this.password) ///////////////// use this once passwords are hashed
-    return (enteredPassword === this.password)
+    return ( await bcrypt.compare(enteredPassword, this.password) || enteredPassword === this.password ) //////////////////// only for development
 }
 
 module.exports = {
