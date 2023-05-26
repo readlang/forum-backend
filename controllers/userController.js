@@ -130,6 +130,11 @@ const deleteUser = async (req, res, next) => {
 
 const sendTokenResponse = (user, statusCode, res) => {
     const token = user.getSignedJwtToken()
+    
+    const userInfo = {}
+    userInfo.id = user.id
+    userInfo.username = user.userName
+    if (user.email) userInfo.email = user.email
 
     const options ={
         expires: new Date( Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000 ),
@@ -138,7 +143,7 @@ const sendTokenResponse = (user, statusCode, res) => {
     res
     .status(statusCode)
     .cookie('token', token, options )
-    .json({success: true, token})
+    .json({success: true, user: userInfo, token})
 }
 
 // function to hash the plain text password
