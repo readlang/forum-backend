@@ -10,9 +10,16 @@ const protectedRoute = async (req, res, next) => {
     let token;
     
     console.log("Headers: ", req.headers)
+    console.log("Cookie: ", req.headers.cookie)
 
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer') ) {
-        token = req.headers.authorization.split(" ")[1]
+    // this is using JWT - header (bearer) authentication
+    // if (req.headers.authorization && req.headers.authorization.startsWith('Bearer') ) {
+    //     token = req.headers.authorization.split(" ")[1]
+    // } 
+
+    // this is using JWT - cookie authentication
+    if (req.headers.cookie && req.headers.cookie.startsWith('token') ) {
+        token = req.headers.cookie.split("=")[1]
     }
 
     if (!token) {
@@ -21,10 +28,10 @@ const protectedRoute = async (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        console.log("Decoded JWT: ", decoded)
+        // console.log("Decoded JWT: ", decoded)
 
         req.user = await User.findByPk(decoded.id)
-        console.log("User: ", req.user)
+        // console.log("User: ", req.user)
         
         next()
     } catch (error) {

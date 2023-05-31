@@ -6,14 +6,12 @@ const logger = require('./middlewares/logger')
 const errorHandler = require('./middlewares/error')
 const cookieParser = require('cookie-parser')
 const fileupload = require('express-fileupload')
-//const mongoSanitize = require('express-mongo-sanitize')
 const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
 const hpp = require('hpp')
 const xss = require('xss-clean')
 
 // imports the various routes of the server
-// const artist = require('./routes/artist')
 const user = require('./routes/user')
 const site = require('./routes/site')
 const post = require('./routes/post')
@@ -25,13 +23,13 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(cors({
-    origin: '*' // this is wildcard string, allowing any site
+    origin: 'http://localhost:3000', // '*' is wildcard string, allowing any site
+    credentials: true,
 }))
 
 // middleware to use for all routes go here:
 app.use(cookieParser())
 app.use(fileupload()) // allows grabbing data out of uploaded files
-//app.use(mongoSanitize())
 app.use(xss()) // sanitizes user input in post body, get queries, url params
 app.use(hpp())
 app.use(helmet({
@@ -48,7 +46,6 @@ const limiter = rateLimit({
 app.use(limiter)
 
 // these are defining the routes
-//app.use('/artist', artist)
 app.use('/user', user)
 app.use('/site', site)
 app.use('/post', post)
@@ -69,5 +66,5 @@ process.on('unhandledRejection', (err, promise) => {
     console.log( `Source: 'server.js' file` )
     console.log( `Error: ${err.message}` ) 
     console.log( err.stack ) 
-    server.close(() => process.exit(1)) // comment this line out to keep the server on
+    server.close(() => process.exit(1)) // exits server if unhandled error
 })

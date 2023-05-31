@@ -1,4 +1,5 @@
 const { User } = require('../models/associationsIndex')
+const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
 // get all users - admin only route, auth first
@@ -30,8 +31,9 @@ const postUser = async (req, res, next) => {
 // login - no auth
 const login = async (req, res, next) => {
     try {
+        console.log(req.headers)
         const { username, password } = req.body
-        if (!username || !password) throw new Error("Please provide an username and password")
+        if (!username || !password) throw new Error("Please provide a username and password")
 
         const user = await User.findOne({ where: {userName: username} })    //.select('+password') /////////
         if (!user) throw new Error("Username does not exist")
@@ -39,6 +41,29 @@ const login = async (req, res, next) => {
         const isMatch = await user.matchPassword(password)
         if (!isMatch) throw new Error('Invalid Password')
 
+        sendTokenResponse(user, 200, res)
+    } catch (error) {
+        next(error)
+    }
+}
+
+// this is to log in via a previously saved cookie containing a JWT token
+const authenticate = async (req, res, next) => {
+    try {
+        let token
+
+        if (req.headers.cookie && req.headers.cookie.startsWith('token') ) {
+            token = req.headers.cookie.split("=")[1]
+        }
+
+        if (!token) {
+            next( new Error('Not logged in via cookie (authenticate)'))
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        console.log("Decoded JWT: ", decoded)
+
+        const user = await User.findByPk(decoded.id)
         sendTokenResponse(user, 200, res)
     } catch (error) {
         next(error)
@@ -138,7 +163,9 @@ const sendTokenResponse = (user, statusCode, res) => {
 
     const options ={
         expires: new Date( Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000 ),
-        httpOnly: true
+        httpOnly: false, ///////////////////////might want to change this to httpOnly true
+        secure: true,    ///////////////
+        sameSite: 'none', //////////////
     }
     res
     .status(statusCode)
@@ -158,6 +185,7 @@ module.exports = {
     postUser,
 
     login,
+    authenticate,
     updatePassword,
     logout,
 

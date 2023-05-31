@@ -5,6 +5,7 @@ const {
     postUser,
 
     login,
+    authenticate,
     updatePassword,
     logout,
     
@@ -23,6 +24,9 @@ router.route('/')
 
 router.route('/login')
     .post(login) // not protected - log in
+
+router.route('/authenticate')
+    .get(authenticate) // not protected - cookie-based log in
 
 router.route('/updatePassword')
     .put(protectedRoute, updatePassword)
