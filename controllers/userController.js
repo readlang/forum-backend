@@ -31,11 +31,11 @@ const postUser = async (req, res, next) => {
 // login - no auth
 const login = async (req, res, next) => {
     try {
-        console.log(req.headers)
+        // console.log(req.headers)
         const { username, password } = req.body
         if (!username || !password) throw new Error("Please provide a username and password")
 
-        const user = await User.findOne({ where: {userName: username} })    //.select('+password') /////////
+        const user = await User.findOne({ where: {userName: username} })    
         if (!user) throw new Error("Username does not exist")
 
         const isMatch = await user.matchPassword(password)
@@ -51,20 +51,25 @@ const login = async (req, res, next) => {
 const authenticate = async (req, res, next) => {
     try {
         let token
-
+        req.headers.cookie ? console.log("Cookie: ", req.headers.cookie) : null
         if (req.headers.cookie && req.headers.cookie.startsWith('token') ) {
-            token = req.headers.cookie.split("=")[1]
+            const tempTokenValue = req.headers.cookie.split("=")[1]
+            if (tempTokenValue !== "none") token = tempTokenValue
         }
 
         if (!token) {
-            next( new Error('Not logged in via cookie (authenticate)'))
+            console.log("Auth: not logged in via cookie")
+            res
+            .status(200)
+            .setHeader('Content-Type', 'application/json')
+            .json({success: false, msg: "Not logged in via cookie"})
+        } else {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET)
+            // console.log("Decoded JWT: ", decoded)
+    
+            const user = await User.findByPk(decoded.id)
+            sendTokenResponse(user, 200, res)
         }
-
-        const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        console.log("Decoded JWT: ", decoded)
-
-        const user = await User.findByPk(decoded.id)
-        sendTokenResponse(user, 200, res)
     } catch (error) {
         next(error)
     }
