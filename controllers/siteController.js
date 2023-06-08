@@ -14,7 +14,13 @@ const getSites = async (req, res, next) => {
 
 const postSite = async (req, res, next) => {
     try {
-        const site = await Site.create(req.body)
+        const newSite = {}
+        if (req.body.name) newSite.name = req.body.name
+        if (req.body.description) newSite.description = req.body.description
+        if (req.body.url) newSite.url = req.body.url
+        newSite.UserId = req.user.id
+
+        const site = await Site.create(newSite)
         res
         .status(200)
         .setHeader('Content-Type', 'application/json')

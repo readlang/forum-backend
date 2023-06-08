@@ -8,10 +8,12 @@ const {
     getSitePosts
 } = require('../controllers/siteController')
 
+const protectedRoute = require('../middlewares/auth')
+
 // all on /site/ route
 router.route('/')
     .get(getSites)
-    .post(postSite)
+    .post(protectedRoute, postSite)
 
 router.route('/:siteId')
     .put(updateSite)
