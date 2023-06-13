@@ -61,14 +61,20 @@ const deletePost = async (req, res, next) => {
 // get all Comments for a Post (postId)
 const getPostComments = async (req, res, next) => {
     try {
+        const post = await Post.findByPk(req.params.postId)
+
         const comments = await Comment.findAll({
             where: { PostId: req.params.postId },
             include: [{ model: User, attributes: ['userName'] }]
         })
+
+        const postComments = JSON.parse(JSON.stringify(post))
+        postComments.comments = JSON.parse(JSON.stringify(comments))
+        
         res
         .status(200)
         .setHeader('Content-Type', 'application/json')
-        .json(comments)
+        .json(postComments)
     } catch (error) {
         next(error)
     }

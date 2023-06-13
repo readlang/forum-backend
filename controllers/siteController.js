@@ -64,17 +64,23 @@ const deleteSite = async (req, res, next) => {
     }
 }
 
-// get all Posts for a Site (siteId)
+// get all Posts for a particular Site (using siteId)
 const getSitePosts = async (req, res, next) => {
     try {
+        const site = await Site.findByPk(req.params.siteId)
+
         const posts = await Post.findAll({
             where: { SiteId: req.params.siteId },
             include: [{model: User, attributes: ['userName'] }] 
         })
+
+        const sitePosts = JSON.parse(JSON.stringify(site))
+        sitePosts.posts = JSON.parse(JSON.stringify(posts))
+
         res
         .status(200)
         .setHeader('Content-Type', 'application/json')
-        .json(posts)
+        .json(sitePosts)
     } catch (error) {
         next(error)
     }
