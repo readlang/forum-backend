@@ -8,14 +8,16 @@ const {
     getPostComments
 } = require('../controllers/postController')
 
+const protectedRoute = require('../middlewares/auth')
+
 // all on /post/ route
 router.route('/')
     .get(getPosts)
-    .post(postPost)
+    .post(protectedRoute, postPost)
 
 router.route('/:postId')
-    .put(updatePost)
-    .delete(deletePost)
+    .put(protectedRoute, updatePost)
+    .delete(protectedRoute, deletePost)
 
 // get all Comments for a Post (postId)    
 router.route('/:postId/comments')

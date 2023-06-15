@@ -7,13 +7,15 @@ const {
     deleteComment,
 } = require('../controllers/commentController')
 
+const protectedRoute = require('../middlewares/auth')
+
 // all on /comment/ route
 router.route('/')
     .get(getComments)
-    .post(postComment)
+    .post(protectedRoute, postComment)
 
 router.route('/:commentId')
-    .put(updateComment)
-    .delete(deleteComment)
+    .put(protectedRoute, updateComment)
+    .delete(protectedRoute, deleteComment)
 
 module.exports = router

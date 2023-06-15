@@ -14,7 +14,12 @@ const getPosts = async (req, res, next) => {
 
 const postPost = async (req, res, next) => {
     try {
-        const post = await Post.create(req.body)
+        const post = await Post.create({...req.body, UserId: req.user.id})
+
+        // this will add the User.userName data into the return post object
+        post.dataValues.User = {}
+        post.dataValues.User.userName = req.user.userName
+        
         res
         .status(200)
         .setHeader('Content-Type', 'application/json')

@@ -14,7 +14,12 @@ const getComments = async (req, res, next) => {
 
 const postComment = async (req, res, next) => {
     try {
-        const comment = await Comment.create(req.body)
+        const comment = await Comment.create({...req.body, UserId: req.user.id})
+        
+        // this will add the User.userName data in the return comment object
+        comment.dataValues.User = {}
+        comment.dataValues.User.userName = req.user.userName
+
         res
         .status(200)
         .setHeader('Content-Type', 'application/json')

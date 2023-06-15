@@ -16,8 +16,8 @@ router.route('/')
     .post(protectedRoute, postSite)
 
 router.route('/:siteId')
-    .put(updateSite)
-    .delete(deleteSite)
+    .put(protectedRoute, updateSite)
+    .delete(protectedRoute, deleteSite)
 
 // get all Posts for a Site (siteId)
 router.route('/:siteId/posts')
